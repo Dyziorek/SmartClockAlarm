@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="monitor_calls">Monitor Calls</string>
+    <string name="monitor_start_time">Monitor Start</string>
+    <string name="monitor_end_time">Monitor End</string>
+    <string name="monitor_day_weeks">Monitor Day Weeks</string>
+    <string name="smartplug_host">Host</string>
+    <string name="smartplug_port">Port</string>
+    <string name="alarm_active">Active Alarm</string>
+</resources>

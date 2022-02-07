@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">SmartClockAlarm</string>
+    <string name="app_name" translatable="false">SmartClockAlarm</string>
+    <string name="Settings">Settings</string>
+    <string name="appTitle">Smart Clock Alarm</string>
+    <string name="searchTxt">Search</string>
+    <string name="notifications">Notifications</string>
+    <string name="powerOn">ON</string>
+    <string name="powerOff">OFF</string>
+    <string name="detect_smartPlug">Detect Smart Plug</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="permission_deny_info">Monitoring phone call is denied.</string>
+    <string name="permission_request">Request permission</string>
+    <string name="permission_request_reason">The tracking phone calls is needed for monitoring feature</string>
+    <string name="notifyId">\"Integer: \"</string>
+    <string name="notifyText">\"Notification: \"</string>
+    <string name="notifyActive">\"Active: \"</string>
+    <string name="notifyCreate">\"Created On: \"</string>
 </resources>

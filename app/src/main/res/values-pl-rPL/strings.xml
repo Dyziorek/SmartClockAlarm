@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Settings">Ustawienia</string>
+    <string name="appTitle">Smart Budzik</string>
+    <string name="searchTxt">Szukaj</string>
+    <string name="notifications">Powiadomienia</string>
+    <string name="powerOn">Włącz</string>
+    <string name="powerOff">Wyłącz</string>
+    <string name="detect_smartPlug">Wykryj Wifi Wtyczkę</string>
+    <string name="smartplug_host">IP Urządzenia</string>
+    <string name="smartplug_port">IP Port</string>
+    <string name="monitor_start_time" translatable="false">Początek Monitorowania</string>
+    <string name="monitor_end_time">Koniec Monitorowania</string>
+    <string name="monitor_calls">Monitoring Telefonu</string>
+    <string name="alarm_active">Akywny Alarm</string>
+    <string name="monitor_day_weeks">Monitorowanie Dni Tygodnia</string>
+    <string name="open_settings">Otwórz Ustawienia</string>
+    <string name="permission_deny_info">Monitorowanie telefonu zabronione.</string>
+    <string name="permission_request">Prośba o zezwolenie</string>
+    <string name="permission_request_reason">Sledzenie telefonu jest potrzebne do monitorowania dzwonka.</string>
+    <string name="notifyId">\"Identyfikator:\"</string>
+    <string name="notifyText">\"Wiadomosc: \"</string>
+    <string name="notifyActive">\"Aktywator: \"</string>
+    <string name="notifyCreate">\"Kiedy: \"</string>
+</resources>
