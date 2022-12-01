@@ -13,3 +13,7 @@ object PlugHost : PreferenceRequest<String>(stringPreferencesKey("smartplug_host
 object PlugPort : PreferenceRequest<String>(stringPreferencesKey("smartplug_port"), "9999")
 
 object AlarmActive : PreferenceRequest<Boolean>(booleanPreferencesKey("alarm_active"), false)
+object AlarmTime : PreferenceRequest<String>(stringPreferencesKey("alarm_time"), "");
+
+object RxPIN : PreferenceRequest<String>(stringPreferencesKey("rxPin"), "0000")
+object RxPESEL : PreferenceRequest<String>(stringPreferencesKey("rxPESEL"), "73102701296")

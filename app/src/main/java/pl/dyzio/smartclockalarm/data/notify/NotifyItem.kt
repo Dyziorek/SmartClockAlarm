@@ -1,4 +1,4 @@
-package pl.dyzio.smartclockalarm.data
+package pl.dyzio.smartclockalarm.data.notify
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

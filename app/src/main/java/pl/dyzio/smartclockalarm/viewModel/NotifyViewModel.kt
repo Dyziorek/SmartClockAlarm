@@ -5,11 +5,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import pl.dyzio.smartclockalarm.SmartClockStates
-import pl.dyzio.smartclockalarm.data.NotifyItem
-import pl.dyzio.smartclockalarm.data.NotifyRepository
+import pl.dyzio.smartclockalarm.data.notify.NotifyItem
+import pl.dyzio.smartclockalarm.data.notify.NotifyRepository
 import java.time.Instant
 import java.util.*
 

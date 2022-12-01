@@ -1,4 +1,4 @@
-package pl.dyzio.smartclockalarm.data
+package pl.dyzio.smartclockalarm.data.notify
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +25,7 @@ interface NotifyDB {
     fun getCount() : Int
 
     @Insert
-    fun insert(item:NotifyItem)
+    fun insert(item: NotifyItem)
 
     @Update
     suspend fun update(item: NotifyItem)

@@ -1,5 +1,8 @@
 package pl.dyzio.smartclockalarm.ui.elements
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -20,20 +23,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionRequired
-import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.*
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat.CLOCK_24H
 import kotlinx.coroutines.launch
 import pl.dyzio.smartclockalarm.MainActivity
 import pl.dyzio.smartclockalarm.R
 import pl.dyzio.smartclockalarm.dataStore
+import pl.dyzio.smartclockalarm.net.NetSystem
+import pl.dyzio.smartclockalarm.service.AlarmReceiver
 import pl.dyzio.smartclockalarm.ui.MaskTransforms.MaskIPTransformation
 import pl.dyzio.smartclockalarm.ui.MaskTransforms.MaskTransformation
 import pl.dyzio.smartclockalarm.ui.MaskTransforms.PortNumberMask
 import pl.dyzio.smartclockalarm.ui.theme.SmartClockAlarmTheme
 import pl.dyzio.smartclockalarm.util.*
+import java.util.*
+
 
 @ExperimentalMaterialApi
 @OptIn(ExperimentalPermissionsApi::class)
@@ -44,13 +49,14 @@ fun SettingsBody(mocking : Boolean = false){
         SettingsBodyMain()
     }
     else {
-        val callTrackingPermissionsApi = rememberPermissionState(permission = android.Manifest.permission.READ_PHONE_STATE)
+        val callTrackingPermissionApi = rememberPermissionState(permission = android.Manifest.permission.READ_PHONE_STATE)
+
         PermissionRequired(
-            permissionState = callTrackingPermissionsApi,
+            permissionState = callTrackingPermissionApi,
             permissionNotGrantedContent = {
                 Rationale(
                     onRequestPermission = {
-                        callTrackingPermissionsApi.launchPermissionRequest()
+                        callTrackingPermissionApi.launchPermissionRequest()
                     }
                 )
             },
@@ -76,12 +82,13 @@ fun Rationale( onRequestPermission : () -> Unit){
 
 @Composable
 fun PermissionDenied(){
+    val context = LocalContext.current
     Column{
         Text(stringResource(R.string.permission_deny_info))
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = {
             MainActivity.applicationContext().startActivity(
-                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", "pl.dyzio.smartclockalarm.ui.elements", null))
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", context.packageName, null))
             )
         }) {
             Text(stringResource(R.string.open_settings))
@@ -98,7 +105,10 @@ fun SettingsBodyMain() {
     val dataManager = remember { DataStoreManager(dataStore) }
     val scope = rememberCoroutineScope()
     val enableRest by dataManager.getPreferenceFlow(MonitorSwitch).collectAsState(initial = false)
+    val enableAlarm by dataManager.getPreferenceFlow(AlarmActive).collectAsState(initial = false)
     val prefs by dataManager.preferenceFlow.collectAsState(initial = null)
+
+
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(0.dp),
@@ -162,7 +172,7 @@ fun SettingsBodyMain() {
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             visualTransformation = MaskTransformation(),
                             trailingIcon = {
-                                Icon(Icons.Default.DateRange, "D&T", Modifier.clickable {
+                                Icon(Icons.Default.AlarmAdd, "D&T", Modifier.clickable {
                                     showDatePicker(context as AppCompatActivity, prefs?.get(MonitorStart.key)
                                         ?: MonitorStart.defaultValue) {
                                         scope.launch {
@@ -200,7 +210,7 @@ fun SettingsBodyMain() {
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     visualTransformation = MaskTransformation(),
                     trailingIcon = {
-                        Icon(Icons.Default.DateRange, "D&T", Modifier.clickable {
+                        Icon(Icons.Default.AlarmAdd, "D&T", Modifier.clickable {
                             showDatePicker(context as AppCompatActivity, prefs?.get(MonitorEnd.key) ?: MonitorEnd.defaultValue) {
                                 scope.launch {
                                     dataManager.editPreference(
@@ -283,11 +293,119 @@ fun SettingsBodyMain() {
                         contentDescription = null)
                 },
                 trailing = {
-                    Button( onClick = {})
+                    Button( onClick = {
+                        var value = prefs?.get(PlugPort.key) ?: PlugPort.defaultValue
+                        scope.launch {
+                            val plugHosts = NetSystem.instanceLookup(value.toInt()).smartPlugSockets
+                            val plugString = when
+                            {
+                                plugHosts.isEmpty() -> "0.0.0.0"
+                                plugHosts.isNotEmpty() -> plugHosts[0].toString()
+                                else -> "0.0.0.0"
+                            }
+                            var internetAddress = plugString.filter {
+                                    charTest -> when (charTest) {
+                                in '0'..'9' -> true
+                                '.' -> true
+                                else -> false
+                                }
+                            }
+                            dataManager.updatePlugHost(internetAddress)
+                        }
+                    })
                     {
                         Icon(Icons.Filled.DeveloperBoard, contentDescription = null)
                     }
                 }
+            )
+        }
+        item {
+            ListItem(
+                modifier = Modifier.padding(0.dp),
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.alarm_active),
+                        style = MaterialTheme.typography.caption,
+                        maxLines = 1 , modifier = Modifier.width(100.dp)
+                    )
+                },
+                icon = {
+                    Icon(Icons.Filled.Alarm,
+                        contentDescription = null)
+                },
+                trailing = {
+                    Switch(
+                        checked = prefs?.get(AlarmActive.key) ?: AlarmActive.defaultValue,
+                        onCheckedChange = {
+                                newVal ->
+                            scope.launch { dataManager.editPreference(AlarmActive.key, newValue = newVal) }
+                        }
+                    )
+                }
+            )
+        }
+        item {
+            ListItem(
+                modifier = Modifier.padding(0.dp),
+                text = {
+                    Text(
+                        text = stringResource(R.string.alarm_time),
+                        style = MaterialTheme.typography.caption,
+                        maxLines = 1 , modifier = Modifier.width(100.dp)
+                    )
+                },
+                icon = {
+                    Icon(Icons.Filled.Alarm,
+                        contentDescription = null)
+                },
+                trailing = {
+                    TextField(
+                        modifier = Modifier.width(140.dp),
+                        value = (prefs?.get(AlarmTime.key) ?: AlarmTime.defaultValue),
+                        onValueChange = { newVal ->
+                            scope.launch { dataManager.editPreference(MonitorEnd.key, newValue = newVal) }
+                        },
+                        enabled = enableAlarm,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        visualTransformation = MaskTransformation(),
+                        trailingIcon = {
+                            Icon(Icons.Default.DateRange, "D&T",
+                                Modifier.clickable(
+                                    enabled = enableAlarm
+                                ) {
+                                showDatePicker(context as AppCompatActivity, prefs?.get(AlarmTime.key) ?: AlarmTime.defaultValue) {
+                                    scope.launch {
+                                        dataManager.editPreference(
+                                            AlarmTime.key,
+                                            newValue = it
+                                        )
+                                        if (it.toInt() != 0) {
+                                            val alarmManager =
+                                                context.getSystemService(ALARM_SERVICE) as AlarmManager
+                                            val intent = Intent(context, AlarmReceiver::class.java)
+                                            var pendingIntent =
+                                                PendingIntent.getBroadcast(context, 991, intent, 0);
+                                            val calendar = Calendar.getInstance()
+                                            calendar.set(Calendar.HOUR_OF_DAY, it.take(2).toInt())
+                                            calendar.set(Calendar.MINUTE, it.takeLast(2).toInt())
+                                            var time =
+                                                calendar.timeInMillis - calendar.timeInMillis % 60000
+                                            if (System.currentTimeMillis() > time) {
+                                                time += if (Calendar.AM_PM == 0) 1000 * 60 * 60 * 12 else 1000 * 60 * 60 * 24
+                                            }
+                                            alarmManager.setAndAllowWhileIdle(
+                                                AlarmManager.RTC_WAKEUP,
+                                                time,
+                                                pendingIntent
+                                            )
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                    )
+                }
+
             )
         }
     }
@@ -298,13 +416,13 @@ fun showDatePicker(appContext: AppCompatActivity, initialValue : String?, update
 {
 
     fun funCheck (checkVal : String, ranger : IntRange) : Int {
-        if (checkVal.isDigitsOnly()) {
+        if (checkVal.isNotEmpty() && checkVal.isDigitsOnly()) {
             return checkVal.filterIndexed{ind , _ -> ind in ranger}.toInt()
         }
         return 0
     }
 
-     val hour = initialValue?.let { funCheck(it, 0..1) } ?: 0
+    val hour = initialValue?.let { funCheck(it, 0..1) } ?: 0
     val minute = initialValue?.let{ funCheck(it, 2..3) } ?: 0
     val picker = MaterialTimePicker.Builder().setTimeFormat(CLOCK_24H).setHour(hour).setMinute(minute).build()
     picker.show(appContext.supportFragmentManager, "Time Pick")

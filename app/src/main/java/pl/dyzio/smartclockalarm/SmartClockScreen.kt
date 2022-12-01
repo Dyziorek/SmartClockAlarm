@@ -6,16 +6,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import pl.dyzio.smartclockalarm.ui.elements.ClockAlarmPanel
 import pl.dyzio.smartclockalarm.ui.elements.NotificationsPanel
 import pl.dyzio.smartclockalarm.ui.elements.SettingsBody
+import pl.dyzio.smartclockalarm.ui.elements.ShopListPanel
 
 enum class SmartClockScreen(
-    val icon : ImageVector,
-    val title : Int,
-    val body : @Composable ((String) -> Unit) -> Unit)
+    val icon: ImageVector,
+    val title: Int,
+    val body: @Composable ((String) -> Unit) -> Unit)
 {
 
     ClockAlarm (
@@ -35,9 +37,14 @@ enum class SmartClockScreen(
         icon = Icons.Filled.Notifications,
         title = R.string.notifications,
         body = {NotificationsPanel()}
+    ),
+
+    @ExperimentalFoundationApi
+    ShopList (
+        icon = Icons.Filled.ShoppingCart,
+        title = R.string.shopListItems,
+        body = {ShopListPanel()}
     );
-
-
 
     @Composable
     fun Content(onScreenChange: (String) -> Unit){

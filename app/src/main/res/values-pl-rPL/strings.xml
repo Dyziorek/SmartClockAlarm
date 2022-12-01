@@ -18,8 +18,19 @@
     <string name="permission_deny_info">Monitorowanie telefonu zabronione.</string>
     <string name="permission_request">Prośba o zezwolenie</string>
     <string name="permission_request_reason">Sledzenie telefonu jest potrzebne do monitorowania dzwonka.</string>
-    <string name="notifyId">\"Identyfikator:\"</string>
-    <string name="notifyText">\"Wiadomosc: \"</string>
-    <string name="notifyActive">\"Aktywator: \"</string>
-    <string name="notifyCreate">\"Kiedy: \"</string>
+    <string name="notifyId">ID:</string>
+    <string name="notifyText">"Wiadomosc: "</string>
+    <string name="notifyActive">"Aktywne: "</string>
+    <string name="notifyCreate">"Utworzono: "</string>
+    <string name="channel_description">Phone Calls Notifications</string>
+    <string name="alarm_time">Ustaw Czas Alarmu</string>
+    <string name="call_note">Notatka:</string>
+    <string name="channel_name">Kanał:</string>
+    <string name="phone_notify_info">Otrzymano %1$s o %2$s</string>
+    <string name="alarm_fire">Alarm</string>
+    <string name="shopListItems">Shop List Items</string>
+    <string name="qr_code_load">Załaduj QR kody</string>
+    <string name="appwidget_text">Smart Zegar</string>
+    <string name="add_widget">Dodaj Widget</string>
+    <string name="app_widget_description">Akcje Budzika</string>
 </resources>

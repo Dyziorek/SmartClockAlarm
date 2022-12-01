@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">SmartClockAlarm</string>
     <string name="Settings">Settings</string>
-    <string name="appTitle">Smart Clock Alarm</string>
     <string name="searchTxt">Search</string>
     <string name="notifications">Notifications</string>
     <string name="powerOn">ON</string>
@@ -11,8 +10,20 @@
     <string name="permission_deny_info">Monitoring phone call is denied.</string>
     <string name="permission_request">Request permission</string>
     <string name="permission_request_reason">The tracking phone calls is needed for monitoring feature</string>
-    <string name="notifyId">\"Integer: \"</string>
-    <string name="notifyText">\"Notification: \"</string>
-    <string name="notifyActive">\"Active: \"</string>
-    <string name="notifyCreate">\"Created On: \"</string>
+    <string name="notifyId">"ID: "</string>
+    <string name="notifyText">"Notification: "</string>
+    <string name="notifyActive">"Active: "</string>
+    <string name="notifyCreate">"Created On: "</string>
+    <string name="channel_name">Phone_Notes</string>
+    <string name="channel_description">Phone Calls Notifications</string>
+    <string name="call_note">Call Note</string>
+    <string name="phone_notify_info">Got call %1$s at %2$s</string>
+    <string name="alarm_time">Set Alarm Time</string>
+    <string name="alarm_fire">Alarm</string>
+    <string name="shopListItems">Shop List Items</string>
+    <string name="appwidget_text">SmartClock</string>
+    <string name="add_widget">Add Widget</string>
+    <string name="app_widget_description">Smart Clock Action Buttons</string>
+    <string name="appTitle">Smart Clock Alarm</string>
+    <string name="qr_code_load">Load QR Codes</string>
 </resources>

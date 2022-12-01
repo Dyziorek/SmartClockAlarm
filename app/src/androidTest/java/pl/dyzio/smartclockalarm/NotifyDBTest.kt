@@ -10,22 +10,22 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import pl.dyzio.smartclockalarm.data.NotifyDB
-import pl.dyzio.smartclockalarm.data.NotifyDataBase
-import pl.dyzio.smartclockalarm.data.NotifyItem
+import pl.dyzio.smartclockalarm.data.CombineDataBase
+import pl.dyzio.smartclockalarm.data.notify.NotifyDB
+import pl.dyzio.smartclockalarm.data.notify.NotifyItem
 import java.util.*
 
 @RunWith (AndroidJUnit4::class)
 class NotifyDBTest {
 
     private lateinit var notifyDB: NotifyDB
-    private lateinit var db : NotifyDataBase
+    private lateinit var db : CombineDataBase
 
     @Before
     fun createDB()    {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-        db = Room.inMemoryDatabaseBuilder(context, NotifyDataBase::class.java).allowMainThreadQueries().build()
+        db = Room.inMemoryDatabaseBuilder(context, CombineDataBase::class.java).allowMainThreadQueries().build()
 
         notifyDB = db.notifyDB()
 

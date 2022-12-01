@@ -1,10 +1,13 @@
 package pl.dyzio.smartclockalarm.util
 
 
+import android.net.Uri
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.itextpdf.text.pdf.PdfReader
+import com.itextpdf.text.pdf.parser.PdfTextExtractor
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -56,6 +59,20 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
         }
         Log.e("DS", "New value is: $updateValue")
         editPreference(PlugHost.key, newValue = updateValue)
+    }
+
+    suspend fun analyzePDF (pdfLink: Uri?){
+        pdfLink?.let { itFile ->
+            val ctx = MainActivity.applicationContext()
+            val reader = PdfReader(ctx.contentResolver.openInputStream(itFile))
+            val numPages = reader.numberOfPages
+            val textBuilder = StringBuilder()
+            for (idx in 0 until numPages)
+            {
+                textBuilder.append(PdfTextExtractor.getTextFromPage(reader, idx))
+            }
+        }
+
     }
 
 }
