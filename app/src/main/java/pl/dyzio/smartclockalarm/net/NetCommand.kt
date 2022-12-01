@@ -71,7 +71,7 @@ class NetCommand {
                 commands["energy"] = "{\"emeter\":{\"get_realtime\":{}}}"
         }
 
-        private suspend fun command(address: InetAddress?, port : Int , timeOut : Int, commndText: String) : String {
+        private suspend fun command(address: InetAddress?, port : Int , timeOut : Int, commandText: String) : String {
             try {
                 val selector = ActorSelectorManager(Dispatchers.IO)
                 val socket = aSocket(selector).tcp().connect(InetSocketAddress(address, port)) {
@@ -81,8 +81,9 @@ class NetCommand {
                 Log.e("INFO", "Socket connection from ${socket.localAddress.toString()} to ${socket.remoteAddress.toString()} on port ${socket.remoteAddress.port}")
                 val input = socket.openReadChannel()
                 val commandsOut = socket.openWriteChannel(autoFlush = true)
-
-                val byteInput = encryptData(commands[commndText].orEmpty()).array()
+                val commandTextValue = commands[commandText].orEmpty()
+                Log.e("INFO", "Send Command text is $commandTextValue")
+                val byteInput = encryptData(commandTextValue).array()
 
                 commandsOut.writeAvailable(byteInput, 0, byteInput.size)
                 Log.e("INFO","Send Data")
